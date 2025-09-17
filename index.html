@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LADIS Delivery • Carta Digital</title>
+  <meta name="description" content="Carta digital de LADIS Delivery: pizzas, hamburguesas, empanadas, papas, calzones, milanesas y bebidas. Pedí por WhatsApp." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{
+      --bg:#0e0f10;
+      --panel:#141518;
+      --panel-2:#1a1c20;
+      --text:#ffffff;
+      --muted:#cfd5df;
+      --brand:#ef4444;   /* rojo botones */
+      --accent:#ffd60a;  /* amarillo títulos */
+      --border:rgba(255,255,255,.10);
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+    }
+    body{ font-family:'Inter',system-ui; background:var(--bg); color:var(--text); }
+    .title-yellow{ color:var(--accent); text-shadow:0 2px 20px rgba(255,214,10,.18); }
+    .muted{ color:var(--muted); }
+    .panel{ background:var(--panel); border:1px solid var(--border); }
+    .card{ border:1px solid var(--border); border-radius:16px; overflow:hidden; background:#0b0c0e; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; padding:.6rem 1rem; border-radius:12px; font-weight:800; background:var(--brand); color:#fff; box-shadow:0 6px 16px rgba(239,68,68,.35);}
+    .btn-outline{ display:inline-flex; align-items:center; justify-content:center; padding:.5rem .9rem; border-radius:12px; font-weight:700; border:2px solid var(--brand); color:var(--brand); background:transparent;}
+    .pill{ white-space:nowrap; padding:.5rem .75rem; border-radius:999px; border:1px solid var(--border); color:var(--muted); background:#0e0f10; }
+    .pill.active{ background:var(--panel-2); color:#fff; border-color:rgba(255,214,10,.35); box-shadow:inset 0 0 0 1px rgba(255,214,10,.2); }
+    .img-grad::after{ content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0)); }
+    .badge{ font-size:.75rem; font-weight:700; padding:.25rem .5rem; border-radius:999px; background:rgba(0,0,0,.55); color:#fff; border:1px solid var(--border); backdrop-filter:blur(4px); }
+    dialog{ background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:16px; }
+    dialog::backdrop{ background:rgba(0,0,0,.55); }
+    .radio-row{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; padding:.6rem .8rem; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); }
+    .radio-row input{ accent-color:var(--brand); }
+    .qtybox{ display:inline-flex; align-items:center; gap:.5rem; }
+    .sticky-nav{ background:rgba(14,15,16,.8); border-bottom:1px solid var(--border); backdrop-filter:blur(6px); }
+    .sticky-cart-shadow{ box-shadow:var(--shadow); }
+    .divider{ border-top:1px solid var(--border); }
+
+    .logo-hero{
+      display:flex; align-items:center; justify-content:center;
+      height:160px; position:relative; overflow:hidden;
+      background: radial-gradient(1200px 200px at 50% 100%, rgba(255,214,10,.08), transparent 60%);
+      border-bottom:1px solid var(--border);
+    }
+    .logo-hero img{
+      max-width:min(75vw, 480px); height:auto;
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,.45));
+      -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
+              mask-image: radial-gradient(closest-side, #000 70%, transparent 100%);
+    }
+
+    .status-open{ background:linear-gradient(90deg, rgba(34,197,94,.18), rgba(255,214,10,.12)); border-bottom:1px solid var(--border); }
+    .status-closed{ background:linear-gradient(90deg, rgba(239,68,68,.20), rgba(255,214,10,.10)); border-bottom:1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 sticky-nav">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <!-- Logo del cliente -->
+        <img src="img/logo-demo.jpeg" alt="LADIS Delivery" class="h-9 w-auto rounded">
+        <span class="font-extrabold">LADIS Delivery</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-2">
+        <a href="#carta" class="pill">Carta</a>
+        <a href="#contacto" class="pill">Contacto</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- LOGO -->
+  <header class="logo-hero">
+    <!-- Reemplazar por el logo real -->
+    <img src="img/logo-demo.jpeg" alt="Logo LADIS">
+  </header>
+
+  <!-- STATUS HORARIO -->
+  <div id="openBanner" class="status-open hidden">
+    <div class="max-w-6xl mx-auto px-4 py-2 text-sm flex items-center justify-between">
+      <div>🟢 <strong>Abierto ahora</strong> — Horario: <b>19:00 a 00:00</b> (Mié a Lun)</div>
+      <div class="muted">Dirección: Moreno 523, Eldorado</div>
+    </div>
+  </div>
+  <div id="closedBanner" class="status-closed hidden">
+    <div class="max-w-6xl mx-auto px-4 py-2 text-sm flex items-center justify-between">
+      <div>🔴 <strong>Cerrado ahora</strong> — Abre <span id="nextOpen"></span></div>
+      <div class="muted">WhatsApp pedidos: 3751 305850</div>
+    </div>
+  </div>
+
+  <!-- NAV CATEGORÍAS -->
+  <nav class="sticky top-[56px] z-40" style="background:rgba(14,15,16,.86); border-bottom:1px solid var(--border);">
+    <div class="max-w-6xl mx-auto px-4 py-2">
+      <div class="flex items-center gap-2 overflow-x-auto">
+        <button data-cat="todo" class="pill active">Todo</button>
+        <button data-cat="pizzas" class="pill">Pizzas</button>
+        <button data-cat="burgers" class="pill">Hamburguesas</button>
+        <button data-cat="empanadas" class="pill">Empanadas</button>
+        <button data-cat="papas" class="pill">Papas</button>
+        <button data-cat="calzones" class="pill">Calzones</button>
+        <button data-cat="milanesas" class="pill">Milanesas</button>
+        <button data-cat="bebidas" class="pill">Bebidas</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CARTA -->
+  <main id="carta" class="max-w-6xl mx-auto px-4 py-6">
+    <h1 class="text-3xl sm:text-4xl font-extrabold title-yellow mb-2">Carta</h1>
+    <p class="muted mb-3">Pedidos rápidos por WhatsApp. Fotos ilustrativas. Precios y nombres según menú vigente.</p>
+    <p class="muted text-sm">¿Cómo comprar? 1) Elegí una <b>familia</b> y tocá <b>“Elegir”</b>. 2) Seleccioná la <b>variante</b> y la <b>cantidad</b>. 3) Sumá al <b>carrito</b> y confirmá por <b>WhatsApp</b>. Listo.</p>
+
+    <section id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+      <!-- ====== 1 CARD POR FAMILIA (imagen grande) ====== -->
+
+      <!-- PIZZAS -->
+      <article class="group card" data-category="pizzas" data-family="pizzas">
+        <div class="relative h-60 sm:h-64">
+          <!-- Imagen grande de familia -->
+          <img src="img/family-pizzas.jpg" alt="Pizzas" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🍕 Pizzas</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Pizzas</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Variantes • desde <b id="from-pizzas">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="pizzas">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- HAMBURGUESAS -->
+      <article class="group card" data-category="burgers" data-family="burgers">
+        <div class="relative h-60 sm:h-64">
+          <img src="img/family-burgers.jpg" alt="Hamburguesas" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🍔 Hamburguesas</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Hamburguesas</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Variantes • desde <b id="from-burgers">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="burgers">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EMPANADAS -->
+      <article class="group card" data-category="empanadas" data-family="empanadas">
+        <div class="relative h-60 sm:h-64">
+          <img src="img/family-empanadas.jpg" alt="Empanadas" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🥟 Empanadas</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Empanadas</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Docena • desde <b id="from-empanadas">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="empanadas">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- PAPAS -->
+      <article class="group card" data-category="papas" data-family="papas">
+        <div class="relative h-60 sm:h-64">
+          <img src="img/family-papas.jpg" alt="Papas" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🍟 Papas</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Papas</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Variantes • desde <b id="from-papas">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="papas">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- CALZONES -->
+      <article class="group card" data-category="calzones" data-family="calzones">
+        <div class="relative h-60 sm:h-64">
+          <img src="img/family-calzones.jpg" alt="Calzones" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🥖 Calzones</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Calzones</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Variantes • desde <b id="from-calzones">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="calzones">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- MILANESAS -->
+      <article class="group card" data-category="milanesas" data-family="milanesas">
+        <div class="relative h-60 sm:h-64">
+          <img src="img/family-milanesas.jpg" alt="Milanesas" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🥩 Milanesas</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Milanesas</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Variantes • desde <b id="from-milanesas">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="milanesas">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- BEBIDAS -->
+      <article class="group card" data-category="bebidas" data-family="bebidas">
+        <div class="relative h-60 sm:h-64">
+          <img src="img/family-bebidas.jpg" alt="Bebidas" class="w-full h-full object-cover">
+          <div class="img-grad absolute inset-0"></div>
+          <div class="absolute top-3 left-3"><span class="badge">🥤 Bebidas</span></div>
+          <div class="absolute bottom-3 left-3 right-3">
+            <h3 class="text-xl font-extrabold title-yellow">Bebidas</h3>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-sm muted">Variantes • desde <b id="from-bebidas">$—</b></span>
+              <button class="btn !py-2 !px-3 text-sm" data-choose="bebidas">Elegir</button>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- STICKY CART -->
+  <div id="stickyCart" class="fixed inset-x-0 bottom-0 z-50 border-t" style="background:rgba(20,21,24,.98); border-color:var(--border); box-shadow:var(--shadow);">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <button id="openCart" class="flex-1 btn-outline">Ver carrito (<span id="cartCount">0</span>)</button>
+      <button id="checkout" class="btn flex-1">Confirmar por WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- DRAWER CARRITO -->
+  <div id="drawer" class="fixed inset-0 z-[60] hidden">
+    <div class="absolute inset-0 bg-black/60" data-close></div>
+    <aside class="absolute right-0 top-0 h-full w-full sm:w-[440px] panel p-5 overflow-y-auto border-l" style="border-color:var(--border);">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-extrabold title-yellow">Tu pedido</h3>
+        <button class="btn-outline" data-close>Cerrar</button>
+      </div>
+      <ul id="cartList" class="mt-4 space-y-4"></ul>
+      <div class="mt-6 divider pt-4 grid grid-cols-2 gap-2 items-center">
+        <div class="font-extrabold">Total</div>
+        <div id="cartTotal" class="text-lg font-extrabold text-right">$0</div>
+        <input id="clienteNombre" class="border rounded-xl px-3 py-2 col-span-2" placeholder="Tu nombre" style="background:#0b0c0e; border-color:var(--border); color:var(--text);" />
+        <select id="clienteModo" class="border rounded-xl px-3 py-2" style="background:#0b0c0e; border-color:var(--border); color:var(--text);">
+          <option value="Retiro">Retiro</option>
+          <option value="Delivery">Delivery</option>
+        </select>
+        <input id="clienteHora" class="border rounded-xl px-3 py-2" placeholder="Hora estimada (ej: 20:30)" style="background:#0b0c0e; border-color:var(--border); color:var(--text);" />
+      </div>
+      <button id="checkout2" class="btn w-full mt-4">Enviar por WhatsApp</button>
+      <p class="text-xs muted mt-2">LADIS Delivery • Moreno 523, Eldorado • Horario 19:00–00:00 (Mié–Lun)</p>
+    </aside>
+  </div>
+
+  <!-- MODAL VARIANTES (una sola UI para todas las familias) -->
+  <dialog id="variantModal" class="w-[95vw] max-w-xl p-0">
+    <form method="dialog" class="p-0">
+      <div class="p-4 border-b flex items-center justify-between" style="border-color:var(--border);">
+        <div>
+          <h3 id="vmTitle" class="text-xl font-extrabold title-yellow">Elegir</h3>
+          <p id="vmDesc" class="text-sm muted">Seleccioná la variante y cantidad</p>
+        </div>
+        <button class="btn-outline" value="cancel">Cerrar</button>
+      </div>
+      <div class="p-4 space-y-4">
+        <!-- Preview de imagen de la variante -->
+        <div class="rounded-2xl overflow-hidden border" style="border-color:var(--border);">
+          <!-- Reemplazá por tus imágenes: img/variants/<familia>/<slug>.jpg -->
+          <img id="vmImg" src="" alt="Vista del producto" class="w-full h-48 object-cover">
+        </div>
+
+        <div id="vmList" class="space-y-2"></div>
+
+        <div class="flex items-center justify-between">
+          <div class="qtybox">
+            <button type="button" class="btn-outline !px-3" id="qtyDec">-</button>
+            <span id="qtyNum" class="font-bold">1</span>
+            <button type="button" class="btn-outline !px-3" id="qtyInc">+</button>
+          </div>
+          <div class="text-right">
+            <div class="text-sm muted">Subtotal</div>
+            <div id="vmSubtotal" class="text-lg font-extrabold">—</div>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-3">
+          <button class="btn-outline" value="cancel">Cancelar</button>
+          <button id="vmAddBtn" class="btn" value="default">Agregar</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- FOOTER -->
+  <footer id="contacto" class="max-w-6xl mx-auto px-4 py-10 text-center text-sm muted">
+    WhatsApp: 3751 305850 • Tel: 3751 370617 • ladisdelivery@gmail.com • IG: @ladis_delivery • FB: Ladis
+  </footer>
+
+  <!-- ========= SCRIPTS ========= -->
+  <script>
+    // ======= CONFIG =======
+    const BRAND_NAME = "LADIS Delivery";
+    const WHATSAPP_NUMBER = "543751305850"; // wa.me formato
+    const CURRENCY = "ARS";
+
+    // ======= HORARIO (Mié–Lun 19:00–00:00, Martes cerrado) =======
+    (function setOpenStatus(){
+      const now = new Date();
+      const day = now.getDay();               // 0 Dom ... 6 Sáb
+      const hour = now.getHours() + now.getMinutes()/60;
+      const openDays = [0,1,3,4,5,6];         // Dom, Lun, Mié, Jue, Vie, Sáb (Mar cerrado)
+      const isOpenDay = openDays.includes(day);
+      const isOpenHour = (hour >= 19 && hour < 24);
+      const open = isOpenDay && isOpenHour;
+
+      document.getElementById(open ? 'openBanner' : 'closedBanner').classList.remove('hidden');
+
+      if(!open){
+        let d = new Date(now);
+        for(let i=0;i<7;i++){
+          d.setDate(now.getDate()+i);
+          const dd = d.getDay();
+          if(openDays.includes(dd)){
+            let label = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][dd] + " 19:00";
+            if(i===0 && hour < 19) label = "hoy 19:00";
+            document.getElementById('nextOpen').textContent = label;
+            break;
+          }
+        }
+      }
+    })();
+
+    // ======= DATA: VARIANTES POR FAMILIA (precios exactos) =======
+    const MENU = {
+      pizzas: {
+        title: "Pizzas",
+        family: "pizzas",
+        variants: [
+          { name:"Muzzarella", price:9500 },
+          { name:"Napolitana", price:10500 },
+          { name:"Calabresa", price:12500 },
+          { name:"Fugazzeta", price:12000 },
+          { name:"Jamón y morrón", price:12500 },
+          { name:"Jamón, morrón y huevo", price:13000 },
+          { name:"Americana (huevo, panceta, verdeo)", price:14000 },
+          { name:"4 Quesos", price:12500 },
+          { name:"Hawaiana", price:12500 },
+          { name:"Palmito", price:13000 },
+          { name:"Italiana", price:18000 },
+          { name:"Camarones", price:18500 },
+        ]
+      },
+      burgers: {
+        title: "Hamburguesas (120 g, con papas)",
+        family: "burgers",
+        variants: [
+          { name:"Jamón y queso", price:8000 },
+          { name:"Simple",        price:8500 },
+          { name:"Completa",      price:9800 },
+          { name:"Gigante",       price:12000 },
+          { name:"Especial",      price:12000 },
+        ]
+      },
+      empanadas: {
+        title: "Empanadas (docena)",
+        family: "empanadas",
+        variants: [
+          { name:"Carne",           price:13000 },
+          { name:"Pollo",           price:13000 },
+          { name:"Jamón y queso",   price:15000 },
+          { name:"Humita",          price:15000 },
+          { name:"Caprese",         price:13000 },
+        ]
+      },
+      papas: {
+        title: "Papas",
+        family: "papas",
+        variants: [
+          { name:"Fritas",          price:4500 },
+          { name:"Gratinadas",      price:6000 },
+          { name:"Papas Ladis",     price:8000 },
+          { name:"Papas a caballo", price:6000 },
+        ]
+      },
+      calzones: {
+        title: "Calzones",
+        family: "calzones",
+        variants: [
+          { name:"Jamón y queso", price:8000 },
+          { name:"Pollo",         price:8000 },
+          { name:"Carne",         price:8000 },
+        ]
+      },
+      milanesas: {
+        title: "Milanesas",
+        family: "milanesas",
+        variants: [
+          { name:"Milanesa al plato a la napolitana", price:12000 },
+          { name:"Sándwich de milanesa",              price:10000 },
+        ]
+      },
+      bebidas: {
+        title: "Bebidas",
+        family: "bebidas",
+        variants: [
+          { name:"Coca-Cola 1,5 L",                                  price:3900 },
+          { name:"Sprite 1,5 L",                                     price:3900 },
+          { name:"Fanta 1,5 L",                                      price:3900 },
+          { name:"Pepsi 1,5 L",                                      price:3000 },
+          { name:"7up 1,5 L",                                        price:3000 },
+          { name:"Paso de los Toros 1,5 L",                          price:3000 },
+          { name:"Pepsi 500 ml",                                     price:1500 },
+          { name:"Agua Las Misiones",                                price:2000 },
+          { name:"Cerveza Brahma 473 ml",                            price:2000 },
+          { name:"Cerveza Quilmes 473 ml",                           price:2000 },
+          { name:"Cerveza Imperial Stout",                           price:2800 },
+          { name:"Cerveza Stella Artois 473 ml",                     price:3000 },
+          { name:"Vino Cordero con Piel de Lobo",                    price:7000 },
+          { name:"Jugo Cepita 1 L",                                  price:2200 },
+          { name:"Baggio 1 L",                                       price:2550 },
+          { name:"Jugo Sierra de los Padres Pomelo 500 ml",          price:2000 },
+          { name:"Jugo Sierra de los Padres Pomelo Rosado 500 ml",   price:2000 },
+          { name:"Jugo Sierra de los Padres Naranja 500 ml",         price:2000 },
+          { name:"Jugo Sierra de los Padres Manzana",                price:2000 },
+          { name:"Energizante Speed",                                price:2990 },
+          { name:"Energizante Monster",                              price:3500 },
+        ]
+      }
+    };
+
+    // ======= FORMAT =======
+    const fmt = (n) => new Intl.NumberFormat('es-AR',{style:'currency', currency:CURRENCY, maximumFractionDigits:0}).format(n);
+
+    // ======= RELLENO "desde $" EN CARDS =======
+    function setFromPrices() {
+      for (const fam in MENU) {
+        const min = Math.min(...MENU[fam].variants.map(v=>v.price));
+        const el = document.getElementById('from-' + fam);
+        if (el) el.textContent = fmt(min);
+      }
+    }
+
+    // ======= CATEGORÍAS =======
+    function applyCategory(cat){
+      document.querySelectorAll('#grid article').forEach(card=>{
+        const c = card.getAttribute('data-category');
+        const show = (cat==='todo' || c===cat);
+        card.style.display = show ? "" : "none";
+      });
+      document.querySelectorAll('nav .pill').forEach(p=>p.classList.remove('active'));
+      document.querySelector(`nav .pill[data-cat="${cat}"]`)?.classList.add('active');
+    }
+    document.querySelectorAll('nav [data-cat]').forEach(btn=>{
+      btn.addEventListener('click', ()=> applyCategory(btn.getAttribute('data-cat')) );
+    });
+
+    // ======= MODAL VARIANTES =======
+    const variantModal = document.getElementById('variantModal');
+    const vmTitle = document.getElementById('vmTitle');
+    const vmDesc  = document.getElementById('vmDesc');
+    const vmList  = document.getElementById('vmList');
+    const vmImg   = document.getElementById('vmImg');
+    const vmSubtotal = document.getElementById('vmSubtotal');
+    const qtyNum = document.getElementById('qtyNum');
+    const qtyDec = document.getElementById('qtyDec');
+    const qtyInc = document.getElementById('qtyInc');
+    const vmAddBtn= document.getElementById('vmAddBtn');
+
+    let currentFamily = null;
+    let currentVariant = null;
+    let currentQty = 1;
+
+    // Sugerencia de ruta de imagen por variante (puede no existir; es opcional)
+    function slug(s){ return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+    function variantImgPath(family, name){
+      return `img/variants/${family}/${slug(name)}.jpg`;
+    }
+
+    function openVariants(famKey){
+      const fam = MENU[famKey]; if(!fam) return;
+      currentFamily = famKey;
+      vmTitle.textContent = fam.title;
+      vmDesc.textContent  = "Seleccioná la variante y cantidad";
+
+      // lista
+      vmList.innerHTML = "";
+      fam.variants.forEach((v, idx)=>{
+        const row = document.createElement('label');
+        row.className = 'radio-row';
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <input type="radio" name="variant" value="${v.name}" ${idx===0?'checked':''}>
+            <div>
+              <div class="font-semibold">${v.name}</div>
+              <div class="text-sm muted">${fmt(v.price)}</div>
+            </div>
+          </div>
+        `;
+        vmList.appendChild(row);
+      });
+
+      // set default
+      currentVariant = fam.variants[0];
+      currentQty = 1; qtyNum.textContent = currentQty;
+      vmSubtotal.textContent = fmt(currentVariant.price * currentQty);
+      vmImg.src = variantImgPath(famKey, currentVariant.name);
+
+      // listeners
+      vmList.querySelectorAll('input[name="variant"]').forEach(input=>{
+        input.addEventListener('change', ()=>{
+          const name = input.value;
+          currentVariant = fam.variants.find(v=>v.name===name);
+          vmSubtotal.textContent = fmt(currentVariant.price * currentQty);
+          vmImg.src = variantImgPath(famKey, currentVariant.name);
+        });
+      });
+
+      qtyDec.onclick = ()=>{ if(currentQty>1){ currentQty--; qtyNum.textContent=currentQty; vmSubtotal.textContent=fmt(currentVariant.price*currentQty);} };
+      qtyInc.onclick = ()=>{ currentQty++; qtyNum.textContent=currentQty; vmSubtotal.textContent=fmt(currentVariant.price*currentQty); };
+
+      variantModal.showModal();
+    }
+
+    document.querySelectorAll('[data-choose]').forEach(btn=>{
+      btn.addEventListener('click', ()=> openVariants(btn.getAttribute('data-choose')) );
+    });
+
+    // ======= CARRITO =======
+    const CART = { items:[], total:0 };
+    const drawer = document.getElementById('drawer');
+
+    function recalc(){
+      CART.total = CART.items.reduce((a,b)=>a + b.unit*b.qty, 0);
+      document.getElementById('cartCount').textContent = CART.items.reduce((a,b)=>a+b.qty,0);
+      document.getElementById('cartTotal').textContent = fmt(CART.total);
+      renderList();
+    }
+
+    function renderList(){
+      const ul = document.getElementById('cartList'); ul.innerHTML = '';
+      if(CART.items.length===0){ ul.innerHTML = '<li class="muted">Tu carrito está vacío.</li>'; return; }
+      CART.items.forEach(i=>{
+        const li = document.createElement('li');
+        li.className = "grid grid-cols-[1fr_auto] gap-2";
+        li.innerHTML = `
+          <div>
+            <div class="font-semibold title-yellow">${i.familyTitle}</div>
+            <div class="text-sm">${i.variantName}</div>
+            <div class="text-sm muted">${fmt(i.unit)} c/u</div>
+          </div>
+          <div class="flex items-center gap-2 self-center">
+            <button class="btn-outline !px-3 !py-1" data-dec='${i.key}'>-</button>
+            <span class="w-6 text-center font-semibold">${i.qty}</span>
+            <button class="btn-outline !px-3 !py-1" data-inc='${i.key}'>+</button>
+          </div>
+        `;
+        ul.appendChild(li);
+      });
+      ul.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>changeQty(b.getAttribute('data-inc'),+1));
+      ul.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>changeQty(b.getAttribute('data-dec'),-1));
+    }
+
+    function changeQty(key, delta){
+      const idx = CART.items.findIndex(it => it.key===key);
+      if(idx===-1) return;
+      CART.items[idx].qty += delta;
+      if(CART.items[idx].qty<=0){ CART.items.splice(idx,1); }
+      recalc();
+    }
+
+    vmAddBtn.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const fam = MENU[currentFamily];
+      const key = JSON.stringify({ f: currentFamily, v: currentVariant.name });
+      const idx = CART.items.findIndex(i=>i.key===key);
+      if(idx>-1){ CART.items[idx].qty += currentQty; }
+      else{
+        CART.items.push({
+          key,
+          family: currentFamily,
+          familyTitle: fam.title,
+          variantName: currentVariant.name,
+          unit: currentVariant.price,
+          qty: currentQty
+        });
+      }
+      variantModal.close();
+      pingCart();
+      recalc();
+    });
+
+    // Drawer open/close
+    document.getElementById('openCart').onclick = ()=>{ drawer.classList.remove('hidden'); };
+    document.querySelectorAll('#drawer [data-close]').forEach(el => el.onclick = ()=> drawer.classList.add('hidden'));
+
+    // WhatsApp
+    function buildOrderMessage(){
+      const nombre = document.getElementById('clienteNombre')?.value || "—";
+      const modo   = document.getElementById('clienteModo')?.value || "—";
+      const hora   = document.getElementById('clienteHora')?.value || "—";
+      const lines = CART.items.map(i => `- ${i.qty}× ${i.familyTitle} • ${i.variantName} — ${fmt(i.unit*i.qty)}`);
+      const msg = [
+        `Pedido ${BRAND_NAME}:`,
+        ...lines,
+        `Total estimado: ${fmt(CART.total)}`,
+        `Nombre: ${nombre} | ${modo} | Hora: ${hora}`
+      ].join("\n");
+      return encodeURIComponent(msg);
+    }
+    function goWhatsApp(){
+      if(CART.items.length===0){ alert("Tu carrito está vacío."); return; }
+      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${buildOrderMessage()}`;
+    }
+    document.getElementById('checkout').onclick  = goWhatsApp;
+    document.getElementById('checkout2')?.addEventListener('click', goWhatsApp);
+
+    // UX
+    function pingCart(){ const el = document.getElementById('stickyCart'); el.animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{ duration:220, easing:'ease-out' }); }
+
+    // INIT
+    setFromPrices();
+    applyCategory('todo');
+    recalc();
+  </script>
+</body>
+</html>
