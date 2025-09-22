@@ -40,13 +40,28 @@
     .divider{ border-top:1px solid var(--border); }
 
     /* LOGO STRIP */
-    .logo-hero{
-      display:flex; align-items:center; justify-content:center;
-      height:72px; position:relative; overflow:hidden;
-      background: radial-gradient(1200px 120px at 50% 100%, rgba(255,214,10,.06), transparent 60%);
-      border-bottom:1px solid var(--border);
-    }
-    .logo-hero img{ height:56px; width:auto; }
+    /* LOGO / HERO (full-width y más alto) */
+.logo-hero{
+  display:flex; align-items:center; justify-content:center;
+  height:28vh;               /* << antes estaba 72px */
+  min-height:120px;          /* asegura altura mínima en móviles */
+  position:relative; overflow:hidden;
+  background: radial-gradient(1200px 200px at 50% 100%,
+              rgba(255,214,10,.06), transparent 60%);
+  border-bottom:1px solid var(--border);
+}
+.logo-hero img{
+  height:100%;               /* << antes estaba 56px */
+  width:auto;
+  max-height:220px;          /* límite razonable en desktop */
+  filter: drop-shadow(0 14px 28px rgba(0,0,0,.45));
+}
+
+/* Opcional: ajustar un poco en pantallas chicas */
+@media (max-width: 640px){
+  .logo-hero{ height:22vh; max-height:170px; }
+}
+
 
     /* Fila variante con qty (multi) */
     .qtyrow{ display:grid; grid-template-columns:1fr auto; gap:.75rem; align-items:center; padding:.7rem .8rem; border:1px solid var(--border); border-radius:14px; background:#0c0d0f; }
