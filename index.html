@@ -11,15 +11,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root{
-      --bg:#0e0f10;           /* negro suave */
-      --panel:#141518;        /* paneles */
-      --panel-2:#1a1c20;      /* paneles secundarios */
-      --text:#ffffff;         /* texto principal */
-      --muted:#cfd5df;        /* texto suave */
-      --brand:#ef4444;        /* rojo botones */
-      --accent:#ffd60a;       /* amarillo títulos */
-      --border:rgba(255,255,255,.10);
-      --shadow:0 10px 30px rgba(0,0,0,.45);
+      --bg:#0e0f10; --panel:#141518; --panel-2:#1a1c20; --text:#ffffff; --muted:#cfd5df;
+      --brand:#ef4444; --accent:#ffd60a; --border:rgba(255,255,255,.10); --shadow:0 10px 30px rgba(0,0,0,.45);
       --ok:#22c55e;
     }
     body{ font-family:'Inter',system-ui; background:var(--bg); color:var(--text); }
@@ -39,31 +32,21 @@
     .sticky-cart-shadow{ box-shadow:var(--shadow); }
     .divider{ border-top:1px solid var(--border); }
 
-    /* LOGO STRIP */
     /* LOGO / HERO (full-width y más alto) */
-.logo-hero{
-  display:flex; align-items:center; justify-content:center;
-  height:28vh;               /* << antes estaba 72px */
-  min-height:120px;          /* asegura altura mínima en móviles */
-  position:relative; overflow:hidden;
-  background: radial-gradient(1200px 200px at 50% 100%,
-              rgba(255,214,10,.06), transparent 60%);
-  border-bottom:1px solid var(--border);
-}
-.logo-hero img{
-  height:100%;               /* << antes estaba 56px */
-  width:auto;
-  max-height:220px;          /* límite razonable en desktop */
-  filter: drop-shadow(0 14px 28px rgba(0,0,0,.45));
-}
+    .logo-hero{
+      display:flex; align-items:center; justify-content:center;
+      height:28vh; min-height:120px;
+      position:relative; overflow:hidden;
+      background: radial-gradient(1200px 200px at 50% 100%, rgba(255,214,10,.06), transparent 60%);
+      border-bottom:1px solid var(--border);
+    }
+    .logo-hero img{
+      height:100%; width:auto; max-height:220px;
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,.45));
+    }
+    @media (max-width: 640px){ .logo-hero{ height:22vh; max-height:170px; } }
 
-/* Opcional: ajustar un poco en pantallas chicas */
-@media (max-width: 640px){
-  .logo-hero{ height:22vh; max-height:170px; }
-}
-
-
-    /* Fila variante con qty (multi) */
+    /* Fila variante con qty */
     .qtyrow{ display:grid; grid-template-columns:1fr auto; gap:.75rem; align-items:center; padding:.7rem .8rem; border:1px solid var(--border); border-radius:14px; background:#0c0d0f; }
     .qtyrow.active{ outline:2px solid rgba(34,197,94,.55); }
     .qtytitle{ font-weight:800; color:#fff; }
@@ -75,29 +58,11 @@
     .qtynum{ min-width:1.9rem; text-align:center; font-weight:800; }
     .status-open{ color:var(--ok); font-weight:800; }
     .status-closed{ color:#fca5a5; font-weight:800; }
-/* Modal oscuro como el resto del sitio */
-dialog{
-  background: var(--panel);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0,0,0,.55); /* sutil para distinguir interfaz */
-}
-dialog::backdrop{
-  background: rgba(0,0,0,.60); /* separa bien del contenido de atrás */
-}
 
-/* Evitar cualquier “mancha” blanca dentro del modal */
-#variantModal .p-4,
-#variantModal .p-0,
-#variantModal .rounded-none{
-  background: transparent;
-}
-
-/* Encabezado y separadores del modal en tema oscuro */
-#variantModal .border-b{ border-color: var(--border); }
-#variantModal .qtyrow{ background:#0c0d0f; } /* ya lo venías usando, lo refuerzo */
-
+    /* Modal oscuro coherente con el sitio */
+    dialog{ background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,.55); }
+    dialog::backdrop{ background:rgba(0,0,0,.60); }
+    #variantModal .border-b{ border-color:var(--border); }
   </style>
 </head>
 <body>
@@ -285,10 +250,9 @@ dialog::backdrop{
     </aside>
   </div>
 
-  <!-- MODAL VARIANTES (hero arriba + multi selección con qty) -->
+  <!-- MODAL VARIANTES -->
   <dialog id="variantModal" class="w-[95vw] max-w-xl p-0">
     <div class="p-0">
-      <!-- Header -->
       <div class="p-4 border-b flex items-center justify-between" style="border-color:var(--border);">
         <div>
           <h3 id="vmTitle" class="text-xl font-extrabold title-yellow">Título</h3>
@@ -297,22 +261,18 @@ dialog::backdrop{
         <button id="vmClose" class="btn-outline" type="button">Cerrar</button>
       </div>
 
-      <!-- Imagen hero de la categoría -->
+      <!-- Hero de la categoría dentro del modal -->
       <div class="rounded-none overflow-hidden relative" style="border-bottom:1px solid var(--border); background:#0c0d0f;">
         <img id="vmImg" src="" alt="Vista del producto" class="w-full h-56 object-cover">
         <div class="absolute top-2 left-2 badge">Vista del producto</div>
       </div>
 
-      <!-- Lista de variantes -->
       <div class="p-4">
         <div id="vmList" class="space-y-2"></div>
-
-        <!-- Subtotal general del modal -->
         <div class="flex items-center justify-between mt-4">
           <div class="text-sm muted">Subtotal</div>
           <div id="vmSubtotal" class="text-lg font-extrabold text-white">$0</div>
         </div>
-
         <div class="flex items-center justify-end gap-3 mt-3">
           <button class="btn-outline" id="vmCancel" type="button">Cancelar</button>
           <button id="vmAdd" class="btn" type="button">Agregar al carrito</button>
@@ -329,165 +289,111 @@ dialog::backdrop{
   <!-- ========= SCRIPTS ========= -->
   <script>
     const BRAND_NAME = "LADIS Delivery";
-    const WHATSAPP_NUMBER = "543751562291";
+    const WHATSAPP_NUMBER = "543751562291";   // Cambiá aquí si hace falta
     const CURRENCY = "ARS";
 
-    // === HORARIOS (ajustá si hace falta) ===
-    // Formato: [desde, hasta] en hora local 24h
-    // Ejemplo: Lun-Jue 19-00, Vie-Sáb 19-02, Dom 19-00
+    /* HORARIOS (badge “Abierto/Cerrado”) */
     const SCHEDULE = {
-      0: [[19,24]],     // Domingo
-      1: [[19,24]],     // Lunes
-      2: [[19,24]],     // Martes
-      3: [[19,24]],     // Miércoles
-      4: [[19,24]],     // Jueves
-      5: [[19,26]],     // Viernes (hasta 02)
-      6: [[19,26]]      // Sábado (hasta 02)
+      0:[[19,24]],1:[[19,24]],2:[[19,24]],3:[[19,24]],4:[[19,24]],5:[[19,26]],6:[[19,26]]
     };
-
     function isOpenNow(d=new Date()){
-      const day = d.getDay(); // 0 Dom ... 6 Sáb
-      const hour = d.getHours() + d.getMinutes()/60;
-      const ranges = SCHEDULE[day] || [];
+      const day=d.getDay(), hour=d.getHours()+d.getMinutes()/60, ranges=SCHEDULE[day]||[];
       for(const [from,to] of ranges){
-        if(to>=24){
-          if(hour>=from || hour<(to-24)) return true; // traspasa medianoche
-        } else {
-          if(hour>=from && hour<to) return true;
-        }
-      }
-      return false;
+        if(to>=24){ if(hour>=from || hour<(to-24)) return true; } else { if(hour>=from && hour<to) return true; }
+      } return false;
     }
-    (function setOpenBadge(){
-      const badge = document.getElementById('openStatus');
-      if(!badge) return;
-      if(isOpenNow()){
-        badge.textContent = "Abierto ahora";
-        badge.classList.add('status-open');
-      }else{
-        badge.textContent = "Cerrado ahora";
-        badge.classList.add('status-closed');
-      }
+    (function(){
+      const badge=document.getElementById('openStatus'); if(!badge) return;
+      if(isOpenNow()){ badge.textContent="Abierto ahora"; badge.classList.add('status-open'); }
+      else{ badge.textContent="Cerrado ahora"; badge.classList.add('status-closed'); }
     })();
 
-    // === DATA con detalles (descripciones bajo el nombre) ===
+    /* DATA */
     const MENU = {
-      pizzas: {
-        title: "Pizzas",
-        img: "img/pizzas-hero.jpg",
-        variants: [
-          { name:"Muzzarella", desc:"Salsa de tomate, muzza y orégano", price:9500 },
-          { name:"Napolitana", desc:"Tomate, muzza, ajo y tomate en rodajas", price:10500 },
-          { name:"Calabresa", desc:"Longaniza calabresa y muzza", price:12500 },
-          { name:"Fugazzeta", desc:"Cebolla salteada y muzza", price:12000 },
-          { name:"Jamón y Morrón", desc:"Muzza, jamón y morrón", price:12500 },
-          { name:"Jamón, Morrón y Huevo", desc:"Muzza, jamón, morrón y huevo", price:13000 },
-          { name:"Americana", desc:"Huevo, panceta y verdeo", price:14000 },
-          { name:"4 Quesos", desc:"Blend de quesos selección", price:12500 },
-          { name:"Hawaiana", desc:"Jamón y ananá", price:12500 },
-          { name:"Palmito", desc:"Palmitos y salsa golf", price:13000 },
-          { name:"Italiana", desc:"Receta especial de la casa", price:18000 },
-          { name:"Camarones", desc:"Camarones salteados", price:18500 }
-        ]
-      },
-      burgers: {
-        title: "Hamburguesas (120g, con papas)",
-        img: "img/hamburguesas-hero.jpg",
-        variants: [
-          { name:"Jamón y Queso", desc:"Medallón 120g con jamón y queso", price:8000 },
-          { name:"Simple", desc:"Medallón 120g, queso, aderezos", price:8500 },
-          { name:"Completa", desc:"Lechuga, tomate, queso y aderezos", price:9800 },
-          { name:"Gigante", desc:"Más carne, más queso", price:12000 },
-          { name:"Especial", desc:"Toque de la casa", price:12000 }
-        ]
-      },
-      lomitos: {
-        title: "Sándwiches de Lomo",
-        img: "img/lomos-hero.jpg",
-        variants: [
-          { name:"Classic", desc:"Carne o pollo con queso y tomate", price:9000 },
-          { name:"Steel", desc:"Carne o pollo con jamón, queso, tomate, lechuga y huevo", price:10000 },
-          { name:"Gran Democracia", desc:"Panceta, queso, tomate, lechuga, cebolla y huevo", price:12000 },
-          { name:"Lomito de Cerdo Especial", desc:"300 g de cerdo con lechuga, tomate, salsa americana y BBQ + papas", price:12000 },
-          { name:"Lomo Ladis", desc:"Morrón, queso, aceituna, huevo, panceta, lechuga, salsas y aros de cebolla", price:14000 }
-        ]
-      },
-      empanadas: {
-        title: "Empanadas",
-        img: "img/empanadas-hero.jpg",
-        variants: [
-          { name:"Caprese — Unidad", desc:"Mozzarella, tomate y albahaca", price:1500 },
-          { name:"Queso y Cebolla — Unidad", desc:"Queso fundido con cebolla salteada", price:1500 },
-          { name:"Docena (sabores a elección, excepto matambre)", desc:"12 unidades surtidas", price:13000 },
-          { name:"Docena de Matambre", desc:"12 unidades rellenas de matambre", price:15000 }
-        ]
-      },
-      papas: {
-        title: "Papas",
-        img: "img/papas-hero.jpg",
-        variants: [
-          { name:"Clásicas", desc:"Porción de papas fritas tradicionales", price:4500 },
-          { name:"Gratinadas", desc:"Papas con gratinado de queso", price:6000 },
-          { name:"Papa Ladis", desc:"Verdeo, panceta y cheddar gratinado", price:8000 },
-          { name:"A Caballo", desc:"Papas con dos huevos fritos", price:6000 }
-        ]
-      },
-      calzones: {
-        title: "Calzones",
-        img: "img/calzone-hero.jpg",
-        variants: [
-          { name:"Jamón y Queso", desc:"Jamón, queso, huevo y aceitunas", price:7500 },
-          { name:"Jamón y Queso con Guarnición", desc:"Incluye papas fritas", price:8500 },
-          { name:"Napolitano", desc:"Jamón, queso, huevo, aceitunas y tomate", price:8000 },
-          { name:"Napolitano con Guarnición", desc:"Con papas fritas", price:9000 },
-          { name:"De Carne", desc:"Jamón, queso, aceitunas, huevo y carne", price:9500 },
-          { name:"De Pollo", desc:"Jamón, queso, aceitunas, huevo y pollo", price:9500 },
-          { name:"De Carne con Guarnición", desc:"Con papas fritas", price:10500 },
-          { name:"De Pollo con Guarnición", desc:"Con papas fritas", price:10500 }
-        ]
-      },
-      milanesas: {
-        title: "Milanesas",
-        img: "img/milanesas-hero.jpg",
-        variants: [
-          { name:"Al Plato Napolitana", desc:"Con guarnición de papas fritas", price:12000 },
-          { name:"Al Plato a Caballo", desc:"Con papas fritas y dos huevos fritos", price:12000 },
-          { name:"Sándwich de Milanesa Clásico", desc:"Jamón, queso, tomate y lechuga", price:12000 },
-          { name:"Sándwich de Milanesa Completo", desc:"Jamón, queso, tomate, huevo, panceta y cebolla", price:13000 }
-        ]
-      },
-      bebidas: {
-        title: "Bebidas",
-        img: "img/bebidas-hero.jpg",
-        variants: [
-          { name:"Coca-Cola 1,5 L", desc:"Botella familiar", price:3900 },
-          { name:"Sprite 1,5 L", desc:"Botella familiar", price:3900 },
-          { name:"Pepsi 1,5 L", desc:"Botella familiar", price:3000 },
-          { name:"7up 1,5 L", desc:"Botella familiar", price:3000 },
-          { name:"Paso de los Toros 1,5 L", desc:"Tónica / pomelo", price:3000 },
-          { name:"Pepsi 500 ml", desc:"Botella individual", price:1500 },
-          { name:"Agua Las Misiones", desc:"Botella", price:2000 },
-          { name:"Cerveza Brahma 473 ml", desc:"Lata", price:2000 },
-          { name:"Cerveza Quilmes 473 ml", desc:"Lata", price:2000 },
-          { name:"Cerveza Imperial Stout", desc:"Lata/botella", price:2800 },
-          { name:"Cerveza Stella Artois 473 ml", desc:"Lata", price:3000 },
-          { name:"Vino Cordero con Piel de Lobo", desc:"Tinto", price:7000 },
-          { name:"Jugo Cepita 1 L", desc:"Variados", price:2200 },
-          { name:"Baggio 1 L", desc:"Variados", price:2550 },
-          { name:"Sierra de los Padres Pomelo 500 ml", desc:"Envase PET", price:2000 },
-          { name:"Sierra de los Padres Pomelo Rosado 500 ml", desc:"Envase PET", price:2000 },
-          { name:"Sierra de los Padres Naranja 500 ml", desc:"Envase PET", price:2000 },
-          { name:"Sierra de los Padres Manzana 500 ml", desc:"Envase PET", price:2000 },
-          { name:"Energizante Speed", desc:"Lata individual", price:2990 },
-          { name:"Energizante Monster", desc:"Lata individual", price:3500 }
-        ]
-      }
+      pizzas:{ title:"Pizzas", img:"img/pizzas-hero.jpg", variants:[
+        {name:"Muzzarella",desc:"Salsa de tomate, muzza y orégano",price:9500},
+        {name:"Napolitana",desc:"Tomate, muzza, ajo y tomate en rodajas",price:10500},
+        {name:"Calabresa",desc:"Longaniza calabresa y muzza",price:12500},
+        {name:"Fugazzeta",desc:"Cebolla salteada y muzza",price:12000},
+        {name:"Jamón y Morrón",desc:"Muzza, jamón y morrón",price:12500},
+        {name:"Jamón, Morrón y Huevo",desc:"Muzza, jamón, morrón y huevo",price:13000},
+        {name:"Americana",desc:"Huevo, panceta y verdeo",price:14000},
+        {name:"4 Quesos",desc:"Blend de quesos selección",price:12500},
+        {name:"Hawaiana",desc:"Jamón y ananá",price:12500},
+        {name:"Palmito",desc:"Palmitos y salsa golf",price:13000},
+        {name:"Italiana",desc:"Receta especial de la casa",price:18000},
+        {name:"Camarones",desc:"Camarones salteados",price:18500}
+      ]},
+      burgers:{ title:"Hamburguesas (120g, con papas)", img:"img/hamburguesas-hero.jpg", variants:[
+        {name:"Jamón y Queso",desc:"Medallón 120g con jamón y queso",price:8000},
+        {name:"Simple",desc:"Medallón 120g, queso, aderezos",price:8500},
+        {name:"Completa",desc:"Lechuga, tomate, queso y aderezos",price:9800},
+        {name:"Gigante",desc:"Más carne, más queso",price:12000},
+        {name:"Especial",desc:"Toque de la casa",price:12000}
+      ]},
+      lomitos:{ title:"Sándwiches de Lomo", img:"img/lomos-hero.jpg", variants:[
+        {name:"Classic",desc:"Carne o pollo con queso y tomate",price:9000},
+        {name:"Steel",desc:"Carne o pollo con jamón, queso, tomate, lechuga y huevo",price:10000},
+        {name:"Gran Democracia",desc:"Panceta, queso, tomate, lechuga, cebolla y huevo",price:12000},
+        {name:"Lomito de Cerdo Especial",desc:"300 g de cerdo, salsas + papas",price:12000},
+        {name:"Lomo Ladis",desc:"Morrón, queso, aceituna, huevo, panceta, lechuga, salsas y aros de cebolla",price:14000}
+      ]},
+      empanadas:{ title:"Empanadas", img:"img/empanadas-hero.jpg", variants:[
+        {name:"Caprese — Unidad",desc:"Mozzarella, tomate y albahaca",price:1500},
+        {name:"Queso y Cebolla — Unidad",desc:"Queso fundido con cebolla",price:1500},
+        {name:"Docena (excepto matambre)",desc:"12 unidades surtidas",price:13000},
+        {name:"Docena de Matambre",desc:"12 unidades rellenas de matambre",price:15000}
+      ]},
+      papas:{ title:"Papas", img:"img/papas-hero.jpg", variants:[
+        {name:"Clásicas",desc:"Porción de papas fritas tradicionales",price:4500},
+        {name:"Gratinadas",desc:"Papas con gratinado de queso",price:6000},
+        {name:"Papa Ladis",desc:"Verdeo, panceta y cheddar",price:8000},
+        {name:"A Caballo",desc:"Papas con dos huevos fritos",price:6000}
+      ]},
+      calzones:{ title:"Calzones", img:"img/calzone-hero.jpg", variants:[
+        {name:"Jamón y Queso",desc:"Jamón, queso, huevo y aceitunas",price:7500},
+        {name:"Jamón y Queso con Guarnición",desc:"Incluye papas fritas",price:8500},
+        {name:"Napolitano",desc:"Jamón, queso, huevo, aceitunas y tomate",price:8000},
+        {name:"Napolitano con Guarnición",desc:"Con papas fritas",price:9000},
+        {name:"De Carne",desc:"Jamón, queso, aceitunas, huevo y carne",price:9500},
+        {name:"De Pollo",desc:"Jamón, queso, aceitunas, huevo y pollo",price:9500},
+        {name:"De Carne con Guarnición",desc:"Con papas fritas",price:10500},
+        {name:"De Pollo con Guarnición",desc:"Con papas fritas",price:10500}
+      ]},
+      milanesas:{ title:"Milanesas", img:"img/milanesas-hero.jpg", variants:[
+        {name:"Al Plato Napolitana",desc:"Con guarnición de papas fritas",price:12000},
+        {name:"Al Plato a Caballo",desc:"Con papas fritas y dos huevos fritos",price:12000},
+        {name:"Sándwich de Milanesa Clásico",desc:"Jamón, queso, tomate y lechuga",price:12000},
+        {name:"Sándwich de Milanesa Completo",desc:"Jamón, queso, tomate, huevo, panceta y cebolla",price:13000}
+      ]},
+      bebidas:{ title:"Bebidas", img:"img/bebidas-hero.jpg", variants:[
+        {name:"Coca-Cola 1,5 L",desc:"Botella familiar",price:3900},
+        {name:"Sprite 1,5 L",desc:"Botella familiar",price:3900},
+        {name:"Pepsi 1,5 L",desc:"Botella familiar",price:3000},
+        {name:"7up 1,5 L",desc:"Botella familiar",price:3000},
+        {name:"Paso de los Toros 1,5 L",desc:"Tónica / pomelo",price:3000},
+        {name:"Pepsi 500 ml",desc:"Botella individual",price:1500},
+        {name:"Agua Las Misiones",desc:"Botella",price:2000},
+        {name:"Cerveza Brahma 473 ml",desc:"Lata",price:2000},
+        {name:"Cerveza Quilmes 473 ml",desc:"Lata",price:2000},
+        {name:"Cerveza Imperial Stout",desc:"Lata/botella",price:2800},
+        {name:"Cerveza Stella Artois 473 ml",desc:"Lata",price:3000},
+        {name:"Vino Cordero con Piel de Lobo",desc:"Tinto",price:7000},
+        {name:"Jugo Cepita 1 L",desc:"Variados",price:2200},
+        {name:"Baggio 1 L",desc:"Variados",price:2550},
+        {name:"Sierra de los Padres Pomelo 500 ml",desc:"Envase PET",price:2000},
+        {name:"Sierra de los Padres Pomelo Rosado 500 ml",desc:"Envase PET",price:2000},
+        {name:"Sierra de los Padres Naranja 500 ml",desc:"Envase PET",price:2000},
+        {name:"Sierra de los Padres Manzana 500 ml",desc:"Envase PET",price:2000},
+        {name:"Energizante Speed",desc:"Lata individual",price:2990},
+        {name:"Energizante Monster",desc:"Lata individual",price:3500}
+      ]}
     };
 
     const fmt = n => new Intl.NumberFormat('es-AR',{style:'currency',currency:CURRENCY,maximumFractionDigits:0}).format(n);
 
-    // “desde $”
-    (function setFromPrices(){
+    /* “desde $” en cards */
+    (function(){
       for(const fam in MENU){
         const min = Math.min(...MENU[fam].variants.map(v=>v.price));
         const el = document.getElementById('from-'+fam);
@@ -495,7 +401,7 @@ dialog::backdrop{
       }
     })();
 
-    // Navegación de categorías
+    /* Filtro de categorías */
     function applyCategory(cat){
       document.querySelectorAll('#grid article').forEach(card=>{
         const okCat = (cat==='todo' || card.getAttribute('data-category')===cat);
@@ -504,161 +410,65 @@ dialog::backdrop{
       document.querySelectorAll('nav .pill').forEach(p=>p.classList.remove('active'));
       document.querySelector(`nav .pill[data-cat="${cat}"]`)?.classList.add('active');
     }
-    document.querySelectorAll('nav [data-cat]').forEach(btn=>{
-      btn.addEventListener('click', ()=> applyCategory(btn.getAttribute('data-cat')) );
-    });
+    document.querySelectorAll('nav [data-cat]').forEach(btn=>btn.addEventListener('click',()=>applyCategory(btn.getAttribute('data-cat'))));
     applyCategory('todo');
 
-    // ==== CARRITO ====
-    const CART = { items:[], total:0 };
-    const cartCount = document.getElementById('cartCount');
-    const cartList = document.getElementById('cartList');
-    const cartTotal = document.getElementById('cartTotal');
-    const drawer = document.getElementById('drawer');
-
-    function addToCart({name,unit,qty}){
-      if(qty<=0) return;
-      const key = name + "@" + unit;
-      const idx = CART.items.findIndex(i=>i.key===key);
-      if(idx>-1){ CART.items[idx].qty += qty; }
-      else { CART.items.push({ key, name, unit, qty }); }
-      recalc(); pingCart();
-    }
-    function recalc(){
-      CART.total = CART.items.reduce((a,b)=>a + b.unit*b.qty, 0);
-      cartCount.textContent = CART.items.reduce((a,b)=>a+b.qty,0);
-      cartTotal.textContent = fmt(CART.total);
-      renderList();
-    }
+    /* Carrito */
+    const CART={items:[],total:0}, cartCount=document.getElementById('cartCount'), cartList=document.getElementById('cartList'), cartTotal=document.getElementById('cartTotal'), drawer=document.getElementById('drawer');
+    function addToCart({name,unit,qty}){ if(qty<=0) return; const key=name+"@"+unit; const idx=CART.items.findIndex(i=>i.key===key); if(idx>-1){ CART.items[idx].qty+=qty; } else { CART.items.push({key,name,unit,qty}); } recalc(); pingCart(); }
+    function recalc(){ CART.total=CART.items.reduce((a,b)=>a+b.unit*b.qty,0); cartCount.textContent=CART.items.reduce((a,b)=>a+b.qty,0); cartTotal.textContent=fmt(CART.total); renderList(); }
     function renderList(){
-      cartList.innerHTML = '';
-      if(CART.items.length===0){ cartList.innerHTML = '<li style="color:var(--muted);">Tu carrito está vacío.</li>'; return; }
+      cartList.innerHTML=''; if(CART.items.length===0){ cartList.innerHTML='<li style="color:var(--muted);">Tu carrito está vacío.</li>'; return; }
       CART.items.forEach(i=>{
-        const li = document.createElement('li');
-        li.className = "grid grid-cols-[1fr_auto] gap-2";
-        li.innerHTML = `
-          <div>
-            <div class="font-semibold title-yellow">${i.name}</div>
-            <div class="text-sm muted">${fmt(i.unit)} c/u</div>
-          </div>
+        const li=document.createElement('li'); li.className="grid grid-cols-[1fr_auto] gap-2";
+        li.innerHTML=`<div><div class="font-semibold title-yellow">${i.name}</div><div class="text-sm muted">${fmt(i.unit)} c/u</div></div>
           <div class="flex items-center gap-2 self-center">
             <button class="btn-outline !px-3 !py-1" data-dec='${i.key}' type="button">-</button>
             <span class="w-6 text-center font-semibold">${i.qty}</span>
             <button class="btn-outline !px-3 !py-1" data-inc='${i.key}' type="button">+</button>
-          </div>
-        `;
+          </div>`;
         cartList.appendChild(li);
       });
       cartList.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>{ const it=CART.items.find(i=>i.key===b.getAttribute('data-inc')); it.qty++; recalc(); });
-      cartList.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-dec'); const idx=CART.items.findIndex(i=>i.key===k); if(idx>-1){ CART.items[idx].qty--; if(CART.items[idx].qty<=0){ CART.items.splice(idx,1);} recalc(); }});
+      cartList.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{ const k=b.getAttribute('data-dec'); const idx=CART.items.findIndex(i=>i.key===k); if(idx>-1){ CART.items[idx].qty--; if(CART.items[idx].qty<=0) CART.items.splice(idx,1); recalc(); }});
     }
-    function pingCart(){ document.getElementById('stickyCart').animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{ duration:220, easing:'ease-out' }); }
-
-    document.getElementById('openCart').onclick = ()=> drawer.classList.remove('hidden');
+    function pingCart(){ document.getElementById('stickyCart').animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:220,easing:'ease-out'}); }
+    document.getElementById('openCart').onclick=()=>drawer.classList.remove('hidden');
     document.querySelectorAll('#drawer [data-close]').forEach(el=>el.onclick=()=>drawer.classList.add('hidden'));
-
     function buildOrderMessage(){
-      const nombre = document.getElementById('clienteNombre')?.value || "—";
-      const modo   = document.getElementById('clienteModo')?.value || "—";
-      const hora   = document.getElementById('clienteHora')?.value || "—";
-      const lines = CART.items.map(i => `- ${i.qty}× ${i.name} — ${fmt(i.unit*i.qty)}`);
+      const nombre=document.getElementById('clienteNombre')?.value||"—", modo=document.getElementById('clienteModo')?.value||"—", hora=document.getElementById('clienteHora')?.value||"—";
+      const lines=CART.items.map(i=>`- ${i.qty}× ${i.name} — ${fmt(i.unit*i.qty)}`);
       return encodeURIComponent([`Pedido ${BRAND_NAME}:`,...lines,`Total estimado: ${fmt(CART.total)}`,`Nombre: ${nombre} | ${modo} | Hora: ${hora}`].join("\n"));
     }
-    function goWhatsApp(){
-      if(CART.items.length===0){ alert("Tu carrito está vacío."); return; }
-      window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${buildOrderMessage()}`;
-    }
-    document.getElementById('checkout').onclick  = goWhatsApp;
-    document.getElementById('checkout2').onclick = goWhatsApp;
+    function goWhatsApp(){ if(CART.items.length===0){ alert("Tu carrito está vacío."); return; } window.location.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${buildOrderMessage()}`; }
+    document.getElementById('checkout').onclick=goWhatsApp; document.getElementById('checkout2').onclick=goWhatsApp;
 
-    // ==== MODAL VARIANTES ====
-    const variantModal = document.getElementById('variantModal');
-    const vmTitle = document.getElementById('vmTitle');
-    const vmImg = document.getElementById('vmImg');
-    const vmList = document.getElementById('vmList');
-    const vmSubtotal = document.getElementById('vmSubtotal');
-    const vmAdd = document.getElementById('vmAdd');
-    const vmClose = document.getElementById('vmClose');
-    const vmCancel = document.getElementById('vmCancel');
-
-    let currentFam = null;
-    let pickState = {}; // {index: qty}
-
+    /* Modal variantes */
+    const variantModal=document.getElementById('variantModal'), vmTitle=document.getElementById('vmTitle'), vmImg=document.getElementById('vmImg'), vmList=document.getElementById('vmList'), vmSubtotal=document.getElementById('vmSubtotal'), vmAdd=document.getElementById('vmAdd'), vmClose=document.getElementById('vmClose'), vmCancel=document.getElementById('vmCancel');
+    let currentFam=null, pickState={};
     function openVariants(fam){
-      const data = MENU[fam]; if(!data) return;
-      currentFam = fam;
-      vmTitle.textContent = data.title;
-      vmImg.src = data.img;
-      vmList.innerHTML = '';
-      pickState = {};
-      vmSubtotal.textContent = fmt(0);
-
-      data.variants.forEach((v, idx)=>{
-        pickState[idx] = 0;
-        const row = document.createElement('div');
-        row.className = 'qtyrow';
-        row.innerHTML = `
-          <div>
-            <div class="qtytitle">${v.name}</div>
-            <div class="qtydesc">${v.desc || ""}</div>
-          </div>
-          <div class="flex items-center gap-4">
-            <div class="qtyprice">${fmt(v.price)}</div>
+      const data=MENU[fam]; if(!data) return; currentFam=fam;
+      vmTitle.textContent=data.title; vmImg.src=data.img; vmList.innerHTML=''; pickState={}; vmSubtotal.textContent=fmt(0);
+      data.variants.forEach((v,idx)=>{
+        pickState[idx]=0;
+        const row=document.createElement('div'); row.className='qtyrow';
+        row.innerHTML=`<div><div class="qtytitle">${v.name}</div><div class="qtydesc">${v.desc||""}</div></div>
+          <div class="flex items-center gap-4"><div class="qtyprice">${fmt(v.price)}</div>
             <div class="qtybox">
               <button class="qtybtn" data-dec="${idx}" type="button">–</button>
               <span class="qtynum" id="q${idx}">0</span>
               <button class="qtybtn" data-inc="${idx}" type="button">+</button>
             </div>
-          </div>
-        `;
+          </div>`;
         vmList.appendChild(row);
       });
-
-      // Bind +/- handlers (type="button" para NO cerrar el dialog)
-      vmList.querySelectorAll('[data-inc]').forEach(b=>{
-        b.onclick = ()=>{
-          const i = +b.getAttribute('data-inc');
-          pickState[i] = (pickState[i]||0) + 1;
-          document.getElementById('q'+i).textContent = pickState[i];
-          b.closest('.qtyrow').classList.add('active');
-          updateModalSubtotal();
-        };
-      });
-      vmList.querySelectorAll('[data-dec]').forEach(b=>{
-        b.onclick = ()=>{
-          const i = +b.getAttribute('data-dec');
-          pickState[i] = Math.max(0, (pickState[i]||0) - 1);
-          document.getElementById('q'+i).textContent = pickState[i];
-          if(pickState[i]===0) b.closest('.qtyrow').classList.remove('active');
-          updateModalSubtotal();
-        };
-      });
-
-      // Abrir modal
+      vmList.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>{ const i=+b.getAttribute('data-inc'); pickState[i]=(pickState[i]||0)+1; document.getElementById('q'+i).textContent=pickState[i]; b.closest('.qtyrow').classList.add('active'); updateModalSubtotal(); });
+      vmList.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{ const i=+b.getAttribute('data-dec'); pickState[i]=Math.max(0,(pickState[i]||0)-1); document.getElementById('q'+i).textContent=pickState[i]; if(pickState[i]===0) b.closest('.qtyrow').classList.remove('active'); updateModalSubtotal(); });
       variantModal.showModal();
     }
-
-    function updateModalSubtotal(){
-      const data = MENU[currentFam];
-      let subtotal = 0;
-      data.variants.forEach((v, idx)=>{ subtotal += v.price * (pickState[idx]||0); });
-      vmSubtotal.textContent = fmt(subtotal);
-    }
-
-    vmAdd.addEventListener('click', ()=>{
-      const data = MENU[currentFam];
-      data.variants.forEach((v, idx)=>{
-        const qty = pickState[idx]||0;
-        if(qty>0){
-          addToCart({ name: `${data.title} — ${v.name}`, unit: v.price, qty });
-        }
-      });
-      variantModal.close();
-    });
-    vmClose.addEventListener('click', ()=>variantModal.close());
-    vmCancel.addEventListener('click', ()=>variantModal.close());
-
-    // Abrir desde las tarjetas
+    function updateModalSubtotal(){ const data=MENU[currentFam]; let subtotal=0; data.variants.forEach((v,idx)=>subtotal+=v.price*(pickState[idx]||0)); vmSubtotal.textContent=fmt(subtotal); }
+    vmAdd.onclick=()=>{ const data=MENU[currentFam]; data.variants.forEach((v,idx)=>{ const qty=pickState[idx]||0; if(qty>0) addToCart({name:`${data.title} — ${v.name}`,unit:v.price,qty}); }); variantModal.close(); };
+    vmClose.onclick=()=>variantModal.close(); vmCancel.onclick=()=>variantModal.close();
     document.querySelectorAll('[data-choose]').forEach(b=>b.addEventListener('click',()=>openVariants(b.getAttribute('data-choose'))));
   </script>
 </body>
