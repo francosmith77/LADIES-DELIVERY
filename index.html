@@ -331,19 +331,43 @@
         {name:"Gigante",desc:"Más carne, más queso",price:12000},
         {name:"Especial",desc:"Toque de la casa",price:12000}
       ]},
-      lomitos:{ title:"Sándwiches de Lomo", img:"img/lomos-hero.jpg", variants:[
-        {name:"Classic",desc:"Carne o pollo con queso y tomate",price:9000},
-        {name:"Steel",desc:"Carne o pollo con jamón, queso, tomate, lechuga y huevo",price:10000},
-        {name:"Gran Democracia",desc:"Panceta, queso, tomate, lechuga, cebolla y huevo",price:12000},
-        {name:"Lomito de Cerdo Especial",desc:"300 g de cerdo, salsas + papas",price:12000},
-        {name:"Lomo Ladis",desc:"Morrón, queso, aceituna, huevo, panceta, lechuga, salsas y aros de cebolla",price:14000}
-      ]},
-      empanadas:{ title:"Empanadas", img:"img/empanadas-hero.jpg", variants:[
-        {name:"Caprese — Unidad",desc:"Mozzarella, tomate y albahaca",price:1500},
-        {name:"Queso y Cebolla — Unidad",desc:"Queso fundido con cebolla",price:1500},
-        {name:"Docena (excepto matambre)",desc:"12 unidades surtidas",price:13000},
-        {name:"Docena de Matambre",desc:"12 unidades rellenas de matambre",price:15000}
-      ]},
+     lomitos: {
+  title: "Sándwiches de Lomo",
+  img: "img/lomos-hero.jpg",
+  variants: [
+    { name: "Clásico (Lomo)",  desc: "Lomo con queso y tomate",                                 price: 9000 },
+    { name: "Clásico (Pollo)", desc: "Pollo con queso y tomate",                                price: 9000 },
+    { name: "Steel (Lomo)",    desc: "Lomo con jamón, queso, tomate, lechuga y huevo",          price: 10000 },
+    { name: "Steel (Pollo)",   desc: "Pollo con jamón, queso, tomate, lechuga y huevo",         price: 10000 }
+  ]
+},
+
+      empanadas: {
+  title: "Empanadas",
+  img: "img/empanadas-hero.jpg",
+  variants: [
+    // ——— POR DOCENA ———
+    { name: "Docena de Matambre",        desc: "12 unidades", price: 15000 },
+    { name: "Docena de Carne",           desc: "12 unidades", price: 13000 },
+    { name: "Docena de Pollo",           desc: "12 unidades", price: 13000 },
+    { name: "Docena de Queso y Cebolla", desc: "12 unidades", price: 13000 },
+    { name: "Docena de Jamón y Queso",   desc: "12 unidades", price: 14000 },
+    { name: "Docena de Humita",          desc: "12 unidades", price: 13000 },
+    { name: "Docena de Verdura",         desc: "12 unidades", price: 13000 },
+    { name: "Docena de Caprese",         desc: "12 unidades", price: 13000 },
+
+    // ——— POR UNIDAD (todas a $1.500) ———
+    { name: "Unidad de Matambre",        desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Carne",           desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Pollo",           desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Queso y Cebolla", desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Jamón y Queso",   desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Humita",          desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Verdura",         desc: "Empanada individual", price: 1500 },
+    { name: "Unidad de Caprese",         desc: "Empanada individual", price: 1500 }
+  ]
+},
+
       papas:{ title:"Papas", img:"img/papas-hero.jpg", variants:[
         {name:"Clásicas",desc:"Porción de papas fritas tradicionales",price:4500},
         {name:"Gratinadas",desc:"Papas con gratinado de queso",price:6000},
