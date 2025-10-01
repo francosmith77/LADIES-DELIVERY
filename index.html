@@ -239,12 +239,34 @@
         <div class="font-extrabold">Total</div>
         <div id="cartTotal" class="text-lg font-extrabold text-right">$0</div>
         <input id="clienteNombre" class="border rounded-xl px-3 py-2 col-span-2" placeholder="Tu nombre" style="background:#0b0c0e; border-color:var(--border); color:var(--text);" />
-        <select id="clienteModo" class="border rounded-xl px-3 py-2" style="background:#0b0c0e; border-color:var(--border); color:var(--text);">
-          <option value="Retiro">Retiro</option>
-          <option value="Delivery">Delivery</option>
+        
         </select>
-        <input id="clienteHora" class="border rounded-xl px-3 py-2" placeholder="Hora estimada (ej: 20:30)" style="background:#0b0c0e; border-color:var(--border); color:var(--text);" />
-      </div>
+<!-- Modalidad -->
+<select id="clienteModo" class="border rounded-xl px-3 py-2"
+        style="background:#0b0c0e; border-color:var(--border); color:var(--text);">
+  <option value="Retiro">Retiro</option>
+  <option value="Delivery">Delivery</option>
+</select>
+
+<!-- Campos condicionales -->
+<div id="extraFields" class="col-span-2">
+  <!-- Para RETIRO -->
+  <div id="fieldRetiro" style="display:none;">
+    <label for="clienteHora" class="block mb-1 font-semibold">Hora de retiro estimada</label>
+    <input id="clienteHora" class="border rounded-xl px-3 py-2"
+           placeholder="Hora estimada (ej: 20:30)"
+           style="width:100%; background:#0b0c0e; border-color:var(--border); color:var(--text);" />
+  </div>
+
+  <!-- Para DELIVERY -->
+  <div id="fieldDelivery" style="display:none; margin-top:.75rem;">
+    <label for="clienteDireccion" class="block mb-1 font-semibold">Colocá aquí tu dirección</label>
+    <input id="clienteDireccion" class="border rounded-xl px-3 py-2"
+           placeholder="Calle, número, barrio, piso/depto"
+           style="width:100%; background:#0b0c0e; border-color:var(--border); color:var(--text);" />
+  </div>
+</div>
+
       <button id="checkout2" class="btn w-full mt-4" type="button">Enviar por WhatsApp</button>
       <p class="text-xs" style="color:var(--muted);">*Precios e imágenes ilustrativas.</p>
     </aside>
@@ -459,11 +481,62 @@
     function pingCart(){ document.getElementById('stickyCart').animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:220,easing:'ease-out'}); }
     document.getElementById('openCart').onclick=()=>drawer.classList.remove('hidden');
     document.querySelectorAll('#drawer [data-close]').forEach(el=>el.onclick=()=>drawer.classList.add('hidden'));
-    function buildOrderMessage(){
-      const nombre=document.getElementById('clienteNombre')?.value||"—", modo=document.getElementById('clienteModo')?.value||"—", hora=document.getElementById('clienteHora')?.value||"—";
-      const lines=CART.items.map(i=>`- ${i.qty}× ${i.name} — ${fmt(i.unit*i.qty)}`);
-      return encodeURIComponent([`Pedido ${BRAND_NAME}:`,...lines,`Total estimado: ${fmt(CART.total)}`,`Nombre: ${nombre} | ${modo} | Hora: ${hora}`].join("\n"));
+   function buildOrderMessage(){
+  const nombre = document.getElementById('clienteNombre')?.value || "—";
+  const modo   = document.getElementById('clienteModo')?.value || "—";
+  const hora   = document.getElementById('clienteHora')?.value || "";
+  const dire   = document.getElementById('clienteDireccion')?.value || "";
+
+  const lines = CART.items.map(i => `- ${i.qty}× ${i.name} — ${fmt(i.unit*i.qty)}`);
+
+  let pie = `Nombre: ${nombre} | ${modo}`;
+  if(modo === 'Retiro' && hora){
+    pie += ` | Hora estimada: ${hora}`;
+  }
+  if(modo === 'Delivery' && dire.trim()){
+    pie += ` | Dirección: ${dire.trim()}`;
+  }
+
+  return encodeURIComponent([
+    `Pedido ${BRAND_NAME}:`,
+    ...lines,
+    `Total estimado: ${fmt(CART.total)}`,
+    pie
+  ].join("\n"));
+}
+
     }
+    // === Toggle campos RETIRO/DELIVERY ===
+(function(){
+  const selModo = document.getElementById('clienteModo');
+  const fieldRetiro = document.getElementById('fieldRetiro');
+  const fieldDelivery = document.getElementById('fieldDelivery');
+  const inpHora = document.getElementById('clienteHora');
+  const inpDir  = document.getElementById('clienteDireccion');
+
+  if(!selModo || !fieldRetiro || !fieldDelivery) return;
+
+  function updateExtraFields(){
+    const v = selModo.value;
+    if(v === 'Retiro'){
+      fieldRetiro.style.display = 'block';
+      fieldDelivery.style.display = 'none';
+      if(inpDir) inpDir.value = '';
+    } else if(v === 'Delivery'){
+      fieldRetiro.style.display = 'none';
+      fieldDelivery.style.display = 'block';
+      if(inpHora) inpHora.value = '';
+    } else {
+      fieldRetiro.style.display = 'none';
+      fieldDelivery.style.display = 'none';
+    }
+  }
+
+  selModo.addEventListener('change', updateExtraFields);
+  document.addEventListener('DOMContentLoaded', updateExtraFields);
+  updateExtraFields();
+})();
+
     function goWhatsApp(){ if(CART.items.length===0){ alert("Tu carrito está vacío."); return; } window.location.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${buildOrderMessage()}`; }
     document.getElementById('checkout').onclick=goWhatsApp; document.getElementById('checkout2').onclick=goWhatsApp;
 
