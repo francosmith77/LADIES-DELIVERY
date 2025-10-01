@@ -22,7 +22,7 @@
     .card{ border:1px solid var(--border); border-radius:16px; overflow:hidden; background:#0b0c0e; }
     .badge{ font-size:.75rem; font-weight:700; padding:.25rem .5rem; border-radius:999px; background:rgba(0,0,0,.55); color:#fff; border:1px solid var(--border); backdrop-filter:blur(4px); }
     .img-grad::after{ content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,0)); }
-    .btn{ display:inline-flex; align-items:center; justify-content:center; padding:.6rem 1rem; border-radius:12px; font-weight:800; background:var(--brand); color:#fff; box-shadow:0 6px 16px rgba(239,68,68,.35);}
+    .btn{ display:inline-flex; align-items:center; justify-content:center; padding:.6rem 1rem; border-radius:12px; font-weight:800; background:var(--brand); color:#fff; box-shadow:0 6px 16px rgba(239,68,68,.35);}    
     .btn:active{ transform:translateY(1px); }
     .btn-outline{ display:inline-flex; align-items:center; justify-content:center; padding:.5rem .9rem; border-radius:12px; font-weight:700; border:2px solid var(--brand); color:var(--brand); background:transparent;}
     .pill{ white-space:nowrap; padding:.5rem .75rem; border-radius:999px; border:1px solid var(--border); color:var(--muted); background:#0e0f10; }
@@ -239,33 +239,33 @@
         <div class="font-extrabold">Total</div>
         <div id="cartTotal" class="text-lg font-extrabold text-right">$0</div>
         <input id="clienteNombre" class="border rounded-xl px-3 py-2 col-span-2" placeholder="Tu nombre" style="background:#0b0c0e; border-color:var(--border); color:var(--text);" />
-        
+
+        <!-- Modalidad -->
+        <select id="clienteModo" class="border rounded-xl px-3 py-2 col-span-2"
+                style="background:#0b0c0e; border-color:var(--border); color:var(--text);">
+          <option value="Retiro">Retiro</option>
+          <option value="Delivery">Delivery</option>
         </select>
-<!-- Modalidad -->
-<select id="clienteModo" class="border rounded-xl px-3 py-2"
-        style="background:#0b0c0e; border-color:var(--border); color:var(--text);">
-  <option value="Retiro">Retiro</option>
-  <option value="Delivery">Delivery</option>
-</select>
 
-<!-- Campos condicionales -->
-<div id="extraFields" class="col-span-2">
-  <!-- Para RETIRO -->
-  <div id="fieldRetiro" style="display:none;">
-    <label for="clienteHora" class="block mb-1 font-semibold">Hora de retiro estimada</label>
-    <input id="clienteHora" class="border rounded-xl px-3 py-2"
-           placeholder="Hora estimada (ej: 20:30)"
-           style="width:100%; background:#0b0c0e; border-color:var(--border); color:var(--text);" />
-  </div>
+        <!-- Campos condicionales -->
+        <div id="extraFields" class="col-span-2">
+          <!-- Para RETIRO -->
+          <div id="fieldRetiro" style="display:none;">
+            <label for="clienteHora" class="block mb-1 font-semibold">Hora de retiro estimada</label>
+            <input id="clienteHora" type="time" class="border rounded-xl px-3 py-2"
+                   placeholder="Hora estimada (ej: 20:30)"
+                   style="width:100%; background:#0b0c0e; border-color:var(--border); color:var(--text);" />
+          </div>
 
-  <!-- Para DELIVERY -->
-  <div id="fieldDelivery" style="display:none; margin-top:.75rem;">
-    <label for="clienteDireccion" class="block mb-1 font-semibold">Colocá aquí tu dirección</label>
-    <input id="clienteDireccion" class="border rounded-xl px-3 py-2"
-           placeholder="Calle, número, barrio, piso/depto"
-           style="width:100%; background:#0b0c0e; border-color:var(--border); color:var(--text);" />
-  </div>
-</div>
+          <!-- Para DELIVERY -->
+          <div id="fieldDelivery" style="display:none; margin-top:.75rem;">
+            <label for="clienteDireccion" class="block mb-1 font-semibold">Colocá aquí tu dirección</label>
+            <input id="clienteDireccion" class="border rounded-xl px-3 py-2"
+                   placeholder="Calle, número, barrio, piso/depto"
+                   style="width:100%; background:#0b0c0e; border-color:var(--border); color:var(--text);" />
+          </div>
+        </div>
+      </div>
 
       <button id="checkout2" class="btn w-full mt-4" type="button">Enviar por WhatsApp</button>
       <p class="text-xs" style="color:var(--muted);">*Precios e imágenes ilustrativas.</p>
@@ -353,43 +353,30 @@
         {name:"Gigante",desc:"Más carne, más queso",price:12000},
         {name:"Especial",desc:"Toque de la casa",price:12000}
       ]},
-     lomitos: {
-  title: "Sándwiches de Lomo",
-  img: "img/lomos-hero.jpg",
-  variants: [
-    { name: "Clásico (Lomo)",  desc: "Lomo con queso y tomate",                                 price: 9000 },
-    { name: "Clásico (Pollo)", desc: "Pollo con queso y tomate",                                price: 9000 },
-    { name: "Steel (Lomo)",    desc: "Lomo con jamón, queso, tomate, lechuga y huevo",          price: 10000 },
-    { name: "Steel (Pollo)",   desc: "Pollo con jamón, queso, tomate, lechuga y huevo",         price: 10000 }
-  ]
-},
-
-      empanadas: {
-  title: "Empanadas",
-  img: "img/empanadas-hero.jpg",
-  variants: [
-    // ——— POR DOCENA ———
-    { name: "Docena de Matambre",        desc: "12 unidades", price: 15000 },
-    { name: "Docena de Carne",           desc: "12 unidades", price: 13000 },
-    { name: "Docena de Pollo",           desc: "12 unidades", price: 13000 },
-    { name: "Docena de Queso y Cebolla", desc: "12 unidades", price: 13000 },
-    { name: "Docena de Jamón y Queso",   desc: "12 unidades", price: 14000 },
-    { name: "Docena de Humita",          desc: "12 unidades", price: 13000 },
-    { name: "Docena de Verdura",         desc: "12 unidades", price: 13000 },
-    { name: "Docena de Caprese",         desc: "12 unidades", price: 13000 },
-
-    // ——— POR UNIDAD (todas a $1.500) ———
-    { name: "Unidad de Matambre",        desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Carne",           desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Pollo",           desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Queso y Cebolla", desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Jamón y Queso",   desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Humita",          desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Verdura",         desc: "Empanada individual", price: 1500 },
-    { name: "Unidad de Caprese",         desc: "Empanada individual", price: 1500 }
-  ]
-},
-
+      lomitos: { title: "Sándwiches de Lomo", img: "img/lomos-hero.jpg", variants: [
+        { name: "Clásico (Lomo)",  desc: "Lomo con queso y tomate",                                 price: 9000 },
+        { name: "Clásico (Pollo)", desc: "Pollo con queso y tomate",                                price: 9000 },
+        { name: "Steel (Lomo)",    desc: "Lomo con jamón, queso, tomate, lechuga y huevo",          price: 10000 },
+        { name: "Steel (Pollo)",   desc: "Pollo con jamón, queso, tomate, lechuga y huevo",         price: 10000 }
+      ]},
+      empanadas: { title: "Empanadas", img: "img/empanadas-hero.jpg", variants: [
+        { name: "Docena de Matambre",        desc: "12 unidades", price: 15000 },
+        { name: "Docena de Carne",           desc: "12 unidades", price: 13000 },
+        { name: "Docena de Pollo",           desc: "12 unidades", price: 13000 },
+        { name: "Docena de Queso y Cebolla", desc: "12 unidades", price: 13000 },
+        { name: "Docena de Jamón y Queso",   desc: "12 unidades", price: 14000 },
+        { name: "Docena de Humita",          desc: "12 unidades", price: 13000 },
+        { name: "Docena de Verdura",         desc: "12 unidades", price: 13000 },
+        { name: "Docena de Caprese",         desc: "12 unidades", price: 13000 },
+        { name: "Unidad de Matambre",        desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Carne",           desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Pollo",           desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Queso y Cebolla", desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Jamón y Queso",   desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Humita",          desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Verdura",         desc: "Empanada individual", price: 1500 },
+        { name: "Unidad de Caprese",         desc: "Empanada individual", price: 1500 }
+      ]},
       papas:{ title:"Papas", img:"img/papas-hero.jpg", variants:[
         {name:"Clásicas",desc:"Porción de papas fritas tradicionales",price:4500},
         {name:"Gratinadas",desc:"Papas con gratinado de queso",price:6000},
@@ -481,63 +468,62 @@
     function pingCart(){ document.getElementById('stickyCart').animate([{transform:'translateY(0)'},{transform:'translateY(-4px)'},{transform:'translateY(0)'}],{duration:220,easing:'ease-out'}); }
     document.getElementById('openCart').onclick=()=>drawer.classList.remove('hidden');
     document.querySelectorAll('#drawer [data-close]').forEach(el=>el.onclick=()=>drawer.classList.add('hidden'));
-   function buildOrderMessage(){
-  const nombre = document.getElementById('clienteNombre')?.value || "—";
-  const modo   = document.getElementById('clienteModo')?.value || "—";
-  const hora   = document.getElementById('clienteHora')?.value || "";
-  const dire   = document.getElementById('clienteDireccion')?.value || "";
 
-  const lines = CART.items.map(i => `- ${i.qty}× ${i.name} — ${fmt(i.unit*i.qty)}`);
-
-  let pie = `Nombre: ${nombre} | ${modo}`;
-  if(modo === 'Retiro' && hora){
-    pie += ` | Hora estimada: ${hora}`;
-  }
-  if(modo === 'Delivery' && dire.trim()){
-    pie += ` | Dirección: ${dire.trim()}`;
-  }
-
-  return encodeURIComponent([
-    `Pedido ${BRAND_NAME}:`,
-    ...lines,
-    `Total estimado: ${fmt(CART.total)}`,
-    pie
-  ].join("\n"));
-}
-
-    }
     // === Toggle campos RETIRO/DELIVERY ===
-(function(){
-  const selModo = document.getElementById('clienteModo');
-  const fieldRetiro = document.getElementById('fieldRetiro');
-  const fieldDelivery = document.getElementById('fieldDelivery');
-  const inpHora = document.getElementById('clienteHora');
-  const inpDir  = document.getElementById('clienteDireccion');
+    (function(){
+      const selModo = document.getElementById('clienteModo');
+      const fieldRetiro = document.getElementById('fieldRetiro');
+      const fieldDelivery = document.getElementById('fieldDelivery');
+      const inpHora = document.getElementById('clienteHora');
+      const inpDir  = document.getElementById('clienteDireccion');
 
-  if(!selModo || !fieldRetiro || !fieldDelivery) return;
+      if(!selModo || !fieldRetiro || !fieldDelivery) return;
 
-  function updateExtraFields(){
-    const v = selModo.value;
-    if(v === 'Retiro'){
-      fieldRetiro.style.display = 'block';
-      fieldDelivery.style.display = 'none';
-      if(inpDir) inpDir.value = '';
-    } else if(v === 'Delivery'){
-      fieldRetiro.style.display = 'none';
-      fieldDelivery.style.display = 'block';
-      if(inpHora) inpHora.value = '';
-    } else {
-      fieldRetiro.style.display = 'none';
-      fieldDelivery.style.display = 'none';
+      function updateExtraFields(){
+        const v = selModo.value;
+        if(v === 'Retiro'){
+          fieldRetiro.style.display = 'block';
+          fieldDelivery.style.display = 'none';
+          if(inpDir) inpDir.value = '';
+        } else if(v === 'Delivery'){
+          fieldRetiro.style.display = 'none';
+          fieldDelivery.style.display = 'block';
+          if(inpHora) inpHora.value = '';
+        } else {
+          fieldRetiro.style.display = 'none';
+          fieldDelivery.style.display = 'none';
+        }
+      }
+
+      selModo.addEventListener('change', updateExtraFields);
+      document.addEventListener('DOMContentLoaded', updateExtraFields);
+      updateExtraFields();
+    })();
+
+    function buildOrderMessage(){
+      const nombre = document.getElementById('clienteNombre')?.value || "—";
+      const modo   = document.getElementById('clienteModo')?.value || "—";
+      const hora   = document.getElementById('clienteHora')?.value || "";
+      const dire   = document.getElementById('clienteDireccion')?.value || "";
+
+      const lines = CART.items.map(i => `- ${i.qty}× ${i.name} — ${fmt(i.unit*i.qty)}`);
+
+      let pie = `Nombre: ${nombre} | ${modo}`;
+      if(modo === 'Retiro' && hora){ pie += ` | Hora estimada: ${hora}`; }
+      if(modo === 'Delivery' && dire.trim()){ pie += ` | Dirección: ${dire.trim()}`; }
+
+      return encodeURIComponent([
+        `Pedido ${BRAND_NAME}:`,
+        ...lines,
+        `Total estimado: ${fmt(CART.total)}`,
+        pie
+      ].join("\n"));
     }
-  }
 
-  selModo.addEventListener('change', updateExtraFields);
-  document.addEventListener('DOMContentLoaded', updateExtraFields);
-  updateExtraFields();
-})();
-
-    function goWhatsApp(){ if(CART.items.length===0){ alert("Tu carrito está vacío."); return; } window.location.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${buildOrderMessage()}`; }
+    function goWhatsApp(){
+      if(CART.items.length===0){ alert("Tu carrito está vacío."); return; }
+      window.location.href=`https://wa.me/${WHATSAPP_NUMBER}?text=${buildOrderMessage()}`;
+    }
     document.getElementById('checkout').onclick=goWhatsApp; document.getElementById('checkout2').onclick=goWhatsApp;
 
     /* Modal variantes */
